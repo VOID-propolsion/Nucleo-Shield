@@ -107,12 +107,14 @@ git clone https://github.com/danielsalyi/Astrea
     - Download and install from [Cmake download](https://cmake.org/download/).
     - For windows, it is recommended to choose the installer under binary distrubutions. MAKE SURE to add the cmake to path during the installation, you will be prompted for that.
     - If you are using linux, I assume that you already know what to do to install cmake \_(-_-)_/
+    - You can verify installation by running `cmake --version` in the terminal,cmd or powershell depending on which os you are using
 
 2. **Install the ARM Toolchain:**
    - Windows: Download and install from [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads).
    - macOS and Linux: Use package managers like Homebrew or apt to install the ARM GCC compiler.
    - Since we are using Nucleo-F446RE, download the arm-none-eabi tool-chain which is for bare-metal environment (without operating syste)
-   - Also MAKESURE to add to path
+   - For windows, also MAKESURE to add to path, will be in the last step before pressing finish in the windows installation
+   - You can verify installation by running `arm-none-eabi-gcc --version` in the terminal,cmd or powershell depending on which os you are using
 
 3. **Install Required VS Code Extensions:**
    - **C/C++**: Provides IntelliSense and debugging support.
