@@ -97,6 +97,48 @@ Our rocket's electronics system centers around a main microcontroller unit (MCU)
 To get started with this project, clone this repository to your local machine using:
 
 ```bash
-git clone https://github.com/your-repository-url.git
+git clone https://github.com/danielsalyi/Astrea
+```
 
-TODO: add project build instructions
+# Project Setup Guide
+
+## Opening the Project in VS Code
+
+1. **Launch Visual Studio Code.**
+2. **Open the Project:**
+   - Go to `File > Open Folder...`
+   - Navigate to the directory where you've cloned the repository and click `Open`.
+
+## Setting Up Your Environment
+
+1. **Install the ARM Toolchain:**
+   - Windows: Download and install from [GNU Arm Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
+   - macOS and Linux: Use package managers like Homebrew or apt to install the ARM GCC compiler.
+
+2. **Install Required VS Code Extensions:**
+   - **C/C++**: Provides IntelliSense and debugging support.
+   - **Cortex-Debug**: Enables debugging STM32 devices directly from VS Code.
+
+## Compiling and Uploading the Code
+
+1. **Build the Project:**
+   - Open a terminal in VS Code (`Terminal > New Terminal`).
+   - Run the command:
+     ```
+     make
+     ```
+     This compiles the project using the Makefile.
+
+2. **Upload the Code to the Board:**
+   - Ensure your Nucleo board is connected to your PC.
+   - Start OpenOCD with:
+     ```
+     openocd -f openocd.cfg
+     ```
+   - In another terminal, use GDB to load the compiled binary:
+     ```
+     arm-none-eabi-gdb build/your-output-file.elf
+     (gdb) target extended-remote :3333
+     (gdb) load
+     (gdb) run
+     ```
