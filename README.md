@@ -1,11 +1,4 @@
 # Astrea
-
-## Useful links:
-
-https://dev.to/pgradot/cmake-on-stm32-the-beginning-3766
-https://www.catsystems.io/vega
-https://github.com/catsystems/cats-embedded
-
 # Team Void - Electronics overview
 
 ## Project Overview
@@ -93,14 +86,38 @@ Our rocket's electronics system centers around a main microcontroller unit (MCU)
 3. Ismail - Specializes in power management and programming.
 4. Yassin - Programming and testing.
 
-## Getting Started
-To get started with this project, clone this repository to your local machine using:
+
+# Project Setup Guide
+
+## URefrences and detailed guides could be found here:
+
+https://dev.to/pgradot/cmake-on-stm32-the-beginning-3766
+https://www.catsystems.io/vega
+https://github.com/catsystems/cats-embedded
+
+For quick setup and to get started with this project using VS code, clone this repository to your local machine using:
 
 ```bash
 git clone https://github.com/danielsalyi/Astrea
 ```
 
-# Project Setup Guide
+## Setting Up Your Environment
+
+1. **Install cmake:** 
+    - Download and install from [Cmake download](https://cmake.org/download/).
+    - For windows, it is recommended to choose the installer under binary distrubutions. MAKE SURE to add the cmake to path during the installation, you will be prompted for that.
+    - If you are using linux, I assume that you already know what to do to install cmake \_(-_-)_/
+
+2. **Install the ARM Toolchain:**
+   - Windows: Download and install from [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads).
+   - macOS and Linux: Use package managers like Homebrew or apt to install the ARM GCC compiler.
+   - Since we are using Nucleo-F446RE, download the arm-none-eabi tool-chain which is for bare-metal environment (without operating syste)
+   - Also MAKESURE to add to path
+
+3. **Install Required VS Code Extensions:**
+   - **C/C++**: Provides IntelliSense and debugging support.
+   - **Cortex-Debug**: Enables debugging STM32 devices directly from VS Code.
+
 
 ## Opening the Project in VS Code
 
@@ -109,15 +126,7 @@ git clone https://github.com/danielsalyi/Astrea
    - Go to `File > Open Folder...`
    - Navigate to the directory where you've cloned the repository and click `Open`.
 
-## Setting Up Your Environment
 
-1. **Install the ARM Toolchain:**
-   - Windows: Download and install from [GNU Arm Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
-   - macOS and Linux: Use package managers like Homebrew or apt to install the ARM GCC compiler.
-
-2. **Install Required VS Code Extensions:**
-   - **C/C++**: Provides IntelliSense and debugging support.
-   - **Cortex-Debug**: Enables debugging STM32 devices directly from VS Code.
 
 ## Compiling and Uploading the Code
 
