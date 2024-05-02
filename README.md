@@ -160,5 +160,15 @@ git clone https://github.com/danielsalyi/Astrea
 
 
 
-+ This is a test for yassin
+# Common problems
 
+## \*\*\* [build/Astrea.elf] Error 1
+
+when compiling and you get the error message:
+```
+Makefile:197: recipe for target 'build/Astrea.elf' failed
+make: *** [build/Astrea.elf] Error 1
+```
+Then there are two ways to solve this issue:
+1. delete the build folder and compile everything again
+2. line 173 of the make file `all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin`, remove `$(BUILD_DIR)/$(TARGET).elf`, then run the command `make`. Add back `$(BUILD_DIR)/$(TARGET).elf` and run the command `make` again.
