@@ -81,10 +81,10 @@ Our rocket's electronics system centers around a main microcontroller unit (MCU)
 
 ## Team Members
 
-1. Daniel - Team leader and focuses on PCB design, microcontroller programming and integration.
-2. Mat - Responsible for Simulation, programming and testing..
-3. Ismail - Specializes in power management and programming.
-4. Yassin - Programming and testing.
+1. Daniel 
+2. Mat 
+3. Ismail 
+4. Yassin 
 
 
 # Project Setup Guide
@@ -153,3 +153,8 @@ git clone https://github.com/danielsalyi/Astrea
      (gdb) load
      (gdb) run
      ```
+
+
++ STM32-for-vscode, install build tools
++ STM32 Cube IDE --> for configuration file
+
