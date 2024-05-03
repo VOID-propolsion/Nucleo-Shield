@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Astrea - Team Void
 
 ## Project Overview
@@ -105,10 +104,6 @@ git clone https://github.com/danielsalyi/Astrea
 1. Download VScode and cubeMX
 2. Install stm32-for-vscode extension, click automatic install or something?
 3. Build and flash the project 
-=======
-# Astrea
-# Team Void - Electronics overview
->>>>>>> da589fc7f35418c31d3093578d356c2ba035eb0c
 
 ## Project Overview
 This repository contains the code for Team Void's rocket electronics system, designed for the European Rocketry Challenge (EuRoC). The system manages navigation, power, and communication functionalities essential for rocket operation.
