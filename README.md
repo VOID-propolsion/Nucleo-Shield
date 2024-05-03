@@ -243,6 +243,8 @@ git clone https://github.com/danielsalyi/Astrea
      make
      ```
      This compiles the project using the Makefile.
+   - cmake command:
+     - `cmake -Bbuild -G "Unix Makefiles"`
 
 2. **Upload the Code to the Board:**
    - Ensure your Nucleo board is connected to your PC.

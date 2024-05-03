@@ -1,6 +1,10 @@
 # Template CMakeLists.txt configuration for STM32 MCUS
 cmake_minimum_required(VERSION 3.12)
+include(./gcc-arm-none-eabi.cmake)
 # ##############################################################################
+# set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE) this does not work for some reason
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 # Edit your MCU information up to the next border
 project(Astrea)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might seperate the main files later
@@ -31,10 +35,12 @@ set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc/Legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
+)
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR})
+    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR}
+)
 
 # Sources
 file(GLOB_RECURSE STM32CUBEMX_SOURCES
