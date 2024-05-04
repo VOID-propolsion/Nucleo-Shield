@@ -44,6 +44,7 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
+    app/
 )
 
 # Sources
@@ -58,7 +59,11 @@ file(GLOB_RECURSE PROJECT_SOURCES FOLLOW_SYMLINKS
 add_executable(${EXECUTABLE}
     ${STM32CUBEMX_SOURCES} 
     ${PROJECT_SOURCES}
-    ${STARTUP_SCRIPT})
+    ${STARTUP_SCRIPT}
+    app/app.cpp
+    app/app.hpp
+
+    )
 
 # Embedded macros(defines)
 target_compile_definitions(${EXECUTABLE} PRIVATE
