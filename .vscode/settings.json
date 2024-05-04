@@ -1,4 +1,4 @@
 {
-    "cortex-debug.armToolchainPath": "C:\\PROGRAM FILES (X86)\\ARM GNU TOOLCHAIN ARM-NONE-EABI\\13.2 REL1\\BIN",
-    "cortex-debug.openocdPath": "C:\\PROGRAMDATA\\OPENOCD\\BIN\\OPENOCD.EXE"
+    "cortex-debug.armToolchainPath": "c:\\Users\\danis\\AppData\\Roaming\\Code\\User\\globalStorage\\bmd.stm32-for-vscode\\@xpack-dev-tools\\arm-none-eabi-gcc\\13.2.1-1.1.1\\.content\\bin",
+    "cortex-debug.openocdPath": "C:\\USERS\\DANIS\\APPDATA\\ROAMING\\CODE\\USER\\GLOBALSTORAGE\\BMD.STM32-FOR-VSCODE\\@XPACK-DEV-TOOLS\\OPENOCD\\0.12.0-2.1\\.CONTENT\\BIN\\OPENOCD.EXE"
 }

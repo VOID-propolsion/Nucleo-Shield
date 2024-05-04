@@ -45,6 +45,21 @@
 			"problemMatcher": [
 				"$gcc"
 			]
+		},
+		{
+			"label": "Do something else",
+			"type": "process",
+			"command": "${command:stm32-for-vscode.flash}",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
 		}
 	]
 }
