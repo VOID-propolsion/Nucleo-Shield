@@ -1,14 +1,17 @@
-# Template CMakeLists.txt configuration for STM32 MCUS
 cmake_minimum_required(VERSION 3.12)
 include(./gcc-arm-none-eabi.cmake)
+
+# Set the build directory
+set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
+
 # ##############################################################################
-# set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE) # this does not work for some reason
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Edit your MCU information up to the next border
 project(Astrea)
-set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might seperate the main files later
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might separate the main files later
 
 set(MCU_FAMILY STM32F4xx)
 set(MCU_MODEL STM32F446RETx)
@@ -94,6 +97,10 @@ target_link_options(${EXECUTABLE} PRIVATE
     -Wl,--end-group
     -Wl,--print-memory-usage)
 
+# Set output directory to 'build'
+set_target_properties(${EXECUTABLE} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
+
 add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
     COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${EXECUTABLE}>)
 
@@ -102,3 +109,6 @@ add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
     ${EXECUTABLE}.hex
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${EXECUTABLE}>
     ${EXECUTABLE}.bin)
+
+add_custom_command(TARGET flash POST_BUILD
+    COMMAND openocd -f ./openocd.cfg -c "program ${BUILD_DIR}/${EXECUTABLE}.elf verify reset exit")
