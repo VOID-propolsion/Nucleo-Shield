@@ -11,7 +11,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Edit your MCU information up to the next border
 project(Astrea)
-set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might separate the main files later
+# Where the main project is
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/App) 
 
 set(MCU_FAMILY STM32F4xx)
 set(MCU_MODEL STM32F446xx)
@@ -44,7 +45,7 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
-    app/
+    ${PROJECT_DIR}/Inc
 )
 
 # Sources
@@ -60,9 +61,6 @@ add_executable(${EXECUTABLE}
     ${STM32CUBEMX_SOURCES} 
     ${PROJECT_SOURCES}
     ${STARTUP_SCRIPT}
-    app/app.cpp
-    app/app.hpp
-
     )
 
 # Embedded macros(defines)
