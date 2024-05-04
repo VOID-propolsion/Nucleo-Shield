@@ -243,8 +243,6 @@ git clone https://github.com/danielsalyi/Astrea
      make
      ```
      This compiles the project using the Makefile.
-   - cmake command:
-     - `cmake -Bbuild -G "Unix Makefiles"`
 
 2. **Upload the Code to the Board:**
    - Ensure your Nucleo board is connected to your PC.
@@ -252,6 +250,8 @@ git clone https://github.com/danielsalyi/Astrea
      ```
      openocd -f openocd.cfg
      ```
+     - Alternatively run the command `make flash`
+     - the command `make erase` clears the board
    - In another terminal, use GDB to load the compiled binary:
      ```
      arm-none-eabi-gdb build/your-output-file.elf
@@ -275,6 +275,7 @@ when compiling and you get the error message:
 Makefile:197: recipe for target 'build/Astrea.elf' failed
 make: *** [build/Astrea.elf] Error 1
 ```
-Then there are two ways to solve this issue:
-1. delete the build folder and compile everything again
-2. line 173 of the make file `all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin`, remove `$(BUILD_DIR)/$(TARGET).elf`, then run the command `make`. Add back `$(BUILD_DIR)/$(TARGET).elf` and run the command `make` again.
+Some ways to solve this issue:
+1. run the command `make clearn`
+2. delete the build folder and compile everything again
+3. line 173 of the make file `all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin`, remove `$(BUILD_DIR)/$(TARGET).elf`, then run the command `make`. Add back `$(BUILD_DIR)/$(TARGET).elf` and run the command `make` again.
