@@ -14,7 +14,8 @@ project(Astrea)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might separate the main files later
 
 set(MCU_FAMILY STM32F4xx)
-set(MCU_MODEL STM32F446RETx)
+set(MCU_MODEL STM32F446xx)
+set(MCU_MODEL_ID STM32F446RETx)
 set(CPU_PARAMETERS
     -mcpu=cortex-m4
     -mthumb
@@ -22,7 +23,7 @@ set(CPU_PARAMETERS
     -mfloat-abi=hard)
 
 set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f446xx.s)
-set(MCU_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/${MCU_MODEL}_FLASH.ld)
+set(MCU_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/${MCU_MODEL_ID}_FLASH.ld)
 # ##############################################################################
 set(EXECUTABLE ${CMAKE_PROJECT_NAME})
 enable_language(C CXX ASM)
@@ -43,7 +44,6 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
-    # ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR}
 )
 
 # Sources
