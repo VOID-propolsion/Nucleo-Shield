@@ -2,9 +2,10 @@
 cmake_minimum_required(VERSION 3.12)
 include(./gcc-arm-none-eabi.cmake)
 # ##############################################################################
-# set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE) this does not work for some reason
+# set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE) # this does not work for some reason
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Edit your MCU information up to the next border
 project(Astrea)
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Core) # might seperate the main files later
@@ -18,7 +19,7 @@ set(CPU_PARAMETERS
     -mfloat-abi=hard)
 
 set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f446xx.s)
-set(MCU_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/STM32F446RETx_FLASH.ld)
+set(MCU_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/${MCU_MODEL}_FLASH.ld)
 # ##############################################################################
 set(EXECUTABLE ${CMAKE_PROJECT_NAME})
 enable_language(C CXX ASM)
@@ -39,7 +40,7 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR}
+    # ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR}
 )
 
 # Sources
@@ -85,7 +86,7 @@ target_link_options(${EXECUTABLE} PRIVATE
     -T${MCU_LINKER_SCRIPT}
     ${CPU_PARAMETERS}
     -Wl,-Map=${CMAKE_PROJECT_NAME}.map
-    --specs=nosys.specs
+    # --specs=nosys.specs
     -Wl,--start-group
     -lc
     -lm
