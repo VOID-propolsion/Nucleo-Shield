@@ -240,26 +240,16 @@ git clone https://github.com/danielsalyi/Astrea
    - Open a terminal in VS Code (`Terminal > New Terminal`).
    - Run the command:
      ```
-     make
+     cmake build all (but use the build on the status bar)
      ```
      This compiles the project using the Makefile.
 
 2. **Upload the Code to the Board:**
    - Ensure your Nucleo board is connected to your PC.
-   - Start OpenOCD with:
+   - In the terminal:
      ```
-     openocd -f openocd.cfg
+     openocd -f ./scripts/openocd/openocd.cfg -c "program ./build/Astrea.elf verify reset exit"
      ```
-     - Alternatively run the command `make flash`
-     - the command `make erase` clears the board
-   - In another terminal, use GDB to load the compiled binary:
-     ```
-     arm-none-eabi-gdb build/your-output-file.elf
-     (gdb) target extended-remote :3333
-     (gdb) load
-     (gdb) run
-     ```
-
 
 + STM32-for-vscode, install build tools
 + STM32 Cube IDE --> for configuration file
