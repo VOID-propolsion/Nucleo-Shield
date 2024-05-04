@@ -18,10 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stm32f446xx.h>
-#include <stm32f4xx_hal_gpio.h>
-#include <stm32f4xx_hal_qspi.h>
-#include <stm32f4xx_hal_pcd.h>
+#include "app.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -40,7 +37,6 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -115,14 +111,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-    HAL_Delay(1000);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
-    HAL_Delay(1000);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-    HAL_Delay(1000);
 
+    loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
