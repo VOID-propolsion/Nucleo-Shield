@@ -30,7 +30,7 @@ clean:
 	cmd /c rd /s /q $(BUILD_DIR)
 
 erase: $(BUILD_DIR)/$(TARGET).elf
-	"C:/PROGRAMDATA/OPENOCD/BIN/OPENOCD.EXE" -f ./openocd.cfg -c "init; reset halt; stm32f4x mass_erase 0; exit"
+	openocd -f ./openocd.cfg -c "init; reset halt; stm32f4x mass_erase 0; exit"
 
 flash: $(BUILD_DIR)/$(TARGET).elf
-	"C:/PROGRAMDATA/OPENOCD/BIN/OPENOCD.EXE" -f ./openocd.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+	openocd -f ./openocd.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
