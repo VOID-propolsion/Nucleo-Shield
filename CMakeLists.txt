@@ -109,6 +109,3 @@ add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
     ${EXECUTABLE}.hex
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${EXECUTABLE}>
     ${EXECUTABLE}.bin)
-
-add_custom_command(TARGET flash POST_BUILD
-    COMMAND openocd -f ./openocd.cfg -c "program ${BUILD_DIR}/${EXECUTABLE}.elf verify reset exit")
