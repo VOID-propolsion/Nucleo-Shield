@@ -96,6 +96,7 @@ target_include_directories(${EXECUTABLE} PRIVATE
 # Compiler and linker options
 target_compile_options(${EXECUTABLE} PRIVATE
     ${CPU_PARAMETERS}
+    -w
     -Wall
     -Wextra
     -Wpedantic
