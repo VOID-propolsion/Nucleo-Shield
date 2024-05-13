@@ -46,11 +46,15 @@ SPI_HandleTypeDef hspi2;
 
 TIM_HandleTypeDef htim3;
 
-PCD_HandleTypeDef hpcd_USB_OTG_FS;
-
 UART_HandleTypeDef huart2;
 
+PCD_HandleTypeDef hpcd_USB_OTG_FS;
+
 /* USER CODE BEGIN PV */
+uint8_t rx_index;
+uint8_t rxdata[2];
+uint8_t rxBuffer[100];
+uint8_t transfer_cplt;
 
 /* USER CODE END PV */
 
@@ -61,8 +65,8 @@ static void MX_QUADSPI_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_USART2_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -104,8 +108,8 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   setup();
   /* USER CODE END 2 */
@@ -114,16 +118,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_UART_Receive_IT(&huart2, rxdata, 1);
     loop();
     /* USER CODE END WHILE */
-  }
-  /* USER CODE BEGIN 3 */
-  /* USER CODE END 3 */
-}
 
-void DEBUG(char* message) 
-{
-  HAL_UART_Transmit(&huart2, (uint8_t *) message, strlen(message), 10);// Sending in normal mode
+    /* USER CODE BEGIN 3 */
+  /* USER CODE END 3 */
+  }
 }
 
 /**
@@ -280,38 +281,6 @@ static void MX_SPI2_Init(void)
   /* USER CODE BEGIN SPI2_Init 2 */
 
   /* USER CODE END SPI2_Init 2 */
-}
-
-/**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
 
 }
 
@@ -365,6 +334,39 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
 
 }
 
@@ -455,14 +457,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA2 PA3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
   /*Configure GPIO pins : PC4 PC5 PC6 PC7
                            PC8 PC11 PC12 */
   GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7
@@ -492,6 +486,39 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+void DEBUG(char* message) 
+{
+  HAL_UART_Transmit(&huart2, (uint8_t *) message, strlen(message), 10);// Sending in normal mode
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(huart);
+  /* NOTE: This function should not be modified, when the callback is needed,
+           the HAL_UART_RxCpltCallback could be implemented in the user file
+   */
+  uint8_t i;
+  if (huart ->Instance == USART2) {
+    if (rx_index == 0) {
+      // clear the buffer
+      for (i = 0; i < 100; i++) {
+        rxBuffer[i] = 0;
+      }
+    }
+    if (rxdata[0] != 13) {
+      // write to data buffer
+      rxBuffer[rx_index++] = rxdata[0];
+    } else {
+      // handle input buffer in here
+      rx_index = 0;
+      transfer_cplt = 1;
+      HAL_UART_Transmit(&huart2, "\n\r", 2, 100);
+    }
+  }
+  HAL_UART_Receive_IT(&huart2, rxdata, 1);
+  HAL_UART_Transmit_IT(&huart2, rxdata, strlen(rxdata));
+}
 /* USER CODE END 4 */
 
 /**

@@ -23,8 +23,7 @@ extern "C"
 
     void loop()
     {
-        // uint8_t message[] = "helloworld!!!\r\n";
-        DEBUG("this is a test\r\n");
+        //DEBUG("this is a test\r\n");
         if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
             for (int i = 0; i < 4; i++) {
                 HAL_GPIO_WritePin(GPIOA, SHIELD_LED_2, GPIO_PIN_SET);
