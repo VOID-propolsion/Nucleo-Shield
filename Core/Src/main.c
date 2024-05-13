@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <stdarg.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,6 +74,7 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#define DEBUG_BUFFER_SIZE 256
 
 /* USER CODE END 0 */
 
@@ -486,15 +488,21 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-void DEBUG(char* message) 
-{
-  HAL_UART_Transmit(&huart2, (uint8_t *) message, strlen(message), 10);// Sending in normal mode
+void DEBUG(const char *format, ...) {
+    char buffer[DEBUG_BUFFER_SIZE];  // Create a buffer to hold the formatted message
+    va_list args;                    // Initialize a variable argument list
+    
+    va_start(args, format);          // Start variadic argument processing
+    vsnprintf(buffer, DEBUG_BUFFER_SIZE, format, args); // Format the string into the buffer
+    va_end(args);                    // Clean up variadic argument list
+    
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY); // Send the formatted string over UART
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
-  UNUSED(huart);
+  UNUSED(huart); // I have no clue what this does, but it was already here
   /* NOTE: This function should not be modified, when the callback is needed,
            the HAL_UART_RxCpltCallback could be implemented in the user file
    */

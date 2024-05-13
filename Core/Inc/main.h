@@ -47,7 +47,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-void DEBUG(char* message);
+void DEBUG(const char *format, ...);
 
 /* USER CODE END EM */
 
