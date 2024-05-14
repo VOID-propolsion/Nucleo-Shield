@@ -32,11 +32,14 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
+#include "pins.h"
 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+// SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef getSpi();
 
 /* USER CODE END ET */
 

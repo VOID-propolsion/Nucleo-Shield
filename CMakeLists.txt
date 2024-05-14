@@ -6,7 +6,7 @@ set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 
 # ##############################################################################
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Edit your MCU information up to the next border

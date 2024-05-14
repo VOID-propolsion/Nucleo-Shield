@@ -52,6 +52,7 @@ UART_HandleTypeDef huart2;
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
+// receive
 uint8_t rx_index;
 uint8_t rxdata[2];
 uint8_t rxBuffer[100];
@@ -487,6 +488,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+SPI_HandleTypeDef getSpi() {
+  return hspi1;
+}
 
 void DEBUG(const char *format, ...) {
     char buffer[DEBUG_BUFFER_SIZE];  // Create a buffer to hold the formatted message

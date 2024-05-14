@@ -1,19 +1,16 @@
 #ifndef STM32_HAL_H
 #define STM32_HAL_H
 
-// these are to combine the GPIO pin into 1 address
-#define ENCODE_GPIO_PIN(port, pin) (((uint32_t)(port) << 16) | (pin))
-#define DECODE_GPIO_PORT(pin) ((GPIO_TypeDef *)(pin >> 16))
-#define DECODE_GPIO_PIN(pin) ((uint16_t)(pin & 0xFFFF))
-
 #include "RadioLib.h"
 #include "stm32f4xx_hal.h"
+#include "pins.h"
+#include "main.h"
 
 class STM32Hal : public RadioLibHal {
 public:
     STM32Hal(uint32_t sck, uint32_t miso, uint32_t mosi)
     : RadioLibHal(GPIO_MODE_INPUT, GPIO_MODE_OUTPUT_PP, GPIO_PIN_RESET, GPIO_PIN_SET, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING),
-      spiSCK(sck), spiMISO(miso), spiMOSI(mosi) {
+    spiSCK(sck), spiMISO(miso), spiMOSI(mosi) {
     }
 
     void init() override {
@@ -58,32 +55,13 @@ public:
         return (HAL_GetTick() * 1000) + (SysTick->LOAD - SysTick->VAL) / (SystemCoreClock / 1000000);
     }
 
+    // needs adjustments
     void spiBegin() {
-        __HAL_RCC_SPI1_CLK_ENABLE();  // Enable the clock for SPI1
-
-        SPI_HandleTypeDef SpiHandle = {};
-        SpiHandle.Instance               = SPI1;
-        SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;  // Adjust as needed
-        SpiHandle.Init.Direction         = SPI_DIRECTION_2LINES;
-        SpiHandle.Init.CLKPhase          = SPI_PHASE_1EDGE;
-        SpiHandle.Init.CLKPolarity       = SPI_POLARITY_LOW;
-        SpiHandle.Init.DataSize          = SPI_DATASIZE_8BIT;
-        SpiHandle.Init.FirstBit          = SPI_FIRSTBIT_MSB;
-        SpiHandle.Init.TIMode            = SPI_TIMODE_DISABLE;
-        SpiHandle.Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
-        SpiHandle.Init.CRCPolynomial     = 7;
-        SpiHandle.Init.NSS               = SPI_NSS_SOFT;
-        SpiHandle.Init.Mode              = SPI_MODE_MASTER;
-
-        HAL_SPI_Init(&SpiHandle);
-
-        // Configure the GPIO pins for SPI
-        pinMode(spiSCK, GPIO_MODE_AF_PP);
-        pinMode(spiMISO, GPIO_MODE_AF_PP);
-        pinMode(spiMOSI, GPIO_MODE_AF_PP);
+        hspi1 = getSpi();
         digitalWrite(spiSCK, GPIO_PIN_RESET);
         digitalWrite(spiMISO, GPIO_PIN_RESET);
         digitalWrite(spiMOSI, GPIO_PIN_RESET);
+        // note to self, the chip select pin should be high?
     }
 
     void spiEnd() {
@@ -136,7 +114,7 @@ private:
     uint32_t spiSCK;
     uint32_t spiMISO;
     uint32_t spiMOSI;
-    SPI_HandleTypeDef hspi1;  // Handle for SPI, adjust for your specific SPI instance
+    SPI_HandleTypeDef hspi1;
 };
 
 #endif

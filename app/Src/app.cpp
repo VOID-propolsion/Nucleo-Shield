@@ -3,14 +3,15 @@
 #include "stm32f4xx_radio.h"
 
 STM32Hal* hal = new STM32Hal(
-    ENCODE_GPIO_PIN(GPIOB, GPIO_PIN_3), // SCK
-    ENCODE_GPIO_PIN(GPIOB, GPIO_PIN_4), // MISO
-    ENCODE_GPIO_PIN(GPIOB, GPIO_PIN_5) // MOSI
+    PB_3, // SCK
+    PB_4, // MISO
+    PB_5 // MOSI
 );
-SX1280 radio = new Module(hal, 
-    ENCODE_GPIO_PIN(GPIOA, GPIO_PIN_4), // Chip select
+SX1280 radio = new Module(
+    hal, 
+    PA_4, // Chip select
     0, // interupt 
-    ENCODE_GPIO_PIN(GPIOA, GPIO_PIN_10) // reset
+    PA_10 // reset
 );
 
 int switches[4] = {SHIELD_SWITCH_1, SHIELD_SWITCH_2, SHIELD_SWITCH_3, SHIELD_SWITCH_4};
@@ -47,7 +48,7 @@ extern "C"
             // the packet was successfully transmitted
             DEBUG("success!");
         } else {
-            DEBUG("failed");
+            DEBUG("failed, code: %d", state);
         }
             // send a packet
         //DEBUG("this is a test\r\n");
