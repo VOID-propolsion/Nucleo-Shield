@@ -3,8 +3,7 @@
 
 #include "main.h"
 #include "sx1280.h"
-#include "pin.hpp" //note to self, might convert this to my pins.h, just for consistency.
-// #include "patterngen.h"
+#include "pin.hpp" //note to self, might add this to my pins.h, just for consistency.
 #include <functional>
 
 #include <stdint.h>
@@ -66,7 +65,6 @@ public:
 	{ };
 
 	~RfLink() {
-		// delete patternGenerator;
 		delete rf1Module;
 	};
 
@@ -81,8 +79,10 @@ public:
 	std::function<void(Packet &packet)> onReceiveTelemetry;
 
 	SX1280 *rf1Module;
-	void changeMode(void);
 	bool sender { true };
+	void changeMode(void);
+	void sendPacket(char *message);
+	void enterRx(void);
 
 private:
 	TIM_HandleTypeDef *heartBeatTimer;
@@ -90,17 +90,14 @@ private:
 	bool transmitter;
 	bool tracking { false };
 
-	// PatternGenerator *patternGenerator;
-
-	Pin rf1TxEnable { Pin(GPIOC, GPIO_PIN_12) };
-	Pin rf1RxEnable { Pin(GPIOC, GPIO_PIN_11) };
+	Pin rf1TxEnable { Pin(RF_tx_GPIO_Port, RF_tx_Pin) };
+	Pin rf1RxEnable { Pin(RF_rx_GPIO_Port, RF_rx_Pin) };
 
 	volatile LinkState state { INIT };
 	uint16_t packetNumber;
 
 	volatile bool heartBeatTimeout { false };
 	volatile IrqSource lastIrqSource { NO_IRQ };
-	bool useRf1 { true };
 	uint32_t lostSync { 0 };
 	uint32_t lostPacket { 0 };
 	std::map<uint8_t, int> failuresPerChannel { };
@@ -115,8 +112,6 @@ private:
 	void setTracking(bool tracking);
 	void adjustTimerToTrackTx(void);
 	void registerLostPacket(void);
-	void sendPacket(void);
-	void enterRx(void);
 };
 
 #endif /* RFLINK_H_ */

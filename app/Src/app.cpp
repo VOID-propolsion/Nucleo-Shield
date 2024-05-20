@@ -1,7 +1,4 @@
 #include "app.hpp"
-#include "main.h"
-#include "tim.h"
-#include "rflink.h"
 // #include "stm32f4xx_radio.h"
 
 // STM32Hal* hal = new STM32Hal(
@@ -41,18 +38,19 @@ extern "C"
     void loop()
     {
         if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-            rfLink.changeMode();
-            DEBUG("Mode changed to: ");
-            if (rfLink.sender) {
-                DEBUG("master\n");
-                HAL_GPIO_WritePin(GPIOA, SHIELD_LED_1, GPIO_PIN_SET);
-                HAL_GPIO_WritePin(GPIOA, SHIELD_LED_2, GPIO_PIN_RESET);
-            } else {
-                DEBUG("slave\n");
-                HAL_GPIO_WritePin(GPIOA, SHIELD_LED_2, GPIO_PIN_SET);
-                HAL_GPIO_WritePin(GPIOA, SHIELD_LED_1, GPIO_PIN_RESET);
+            rfLink.sendPacket("hello world!");
+            while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
+
             }
+        } else {
+            rfLink.enterRx();
         }
-        rfLink.runLoop();
+        HAL_Delay(500);
+    }
+
+    int handleInput(uint8_t* buffer) {
+        DEBUG("\n");
+        rfLink.sendPacket((char *) buffer);
+        return 0;
     }
 }

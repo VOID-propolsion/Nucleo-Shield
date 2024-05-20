@@ -1,4 +1,8 @@
 #pragma once
+#include "main.h"
+#include "tim.h"
+#include "rflink.h"
+
 #define BOARD_BUTTON        GPIO_PIN_13 // b
 #define BOARD_LED           GPIO_PIN_5 // a
 
@@ -18,6 +22,7 @@ extern "C"
 
     void setup();
     void loop();
+    int handleInput(uint8_t* buffer);
 
 #ifdef __cplusplus
 }
