@@ -14,6 +14,8 @@
 // );
 
 RfLink rfLink = RfLink(&htim3, true);
+uint8_t receiveBuffer[256]; // Buffer to store received data
+uint8_t receiveSize;
 
 int switches[4] = {SHIELD_SWITCH_1, SHIELD_SWITCH_2, SHIELD_SWITCH_3, SHIELD_SWITCH_4};
 
@@ -40,10 +42,21 @@ extern "C"
         if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
             rfLink.sendPacket("hello world!");
             while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-
+                if (rfLink.receivePacket(receiveBuffer, &receiveSize, sizeof(receiveBuffer))) {
+                    // Process received data
+                    DEBUG("Received data: ");
+                    for (uint8_t i = 0; i < receiveSize; ++i) {
+                        DEBUG("%02X ", receiveBuffer[i]);
+                    }
+                    DEBUG("\n");
+                } else {
+                    DEBUG("No data received or error occurred\n");
+                }
+                HAL_Delay(1000);
             }
         } else {
             rfLink.enterRx();
+
         }
         HAL_Delay(500);
     }

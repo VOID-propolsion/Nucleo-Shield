@@ -7,27 +7,27 @@
 
 void RfLink::init() {
 	// init RF mobule #1
-	Pin rf1NresetPin(RF_Reset_GPIO_Port, RF_Reset_Pin);
-	Pin rf1NcsPin(RF_NSS_GPIO_Port, RF_NSS_Pin);
-	Pin rf1BusyPin(RF_Busy_GPIO_Port, RF_Busy_Pin);
-	this->rf1Module = new SX1280(&hspi1, rf1NresetPin, rf1NcsPin, rf1BusyPin);
+	Pin rfNresetPin(RF_Reset_GPIO_Port, RF_Reset_Pin);
+	Pin rfNcsPin(RF_NSS_GPIO_Port, RF_NSS_Pin);
+	Pin rfBusyPin(RF_Busy_GPIO_Port, RF_Busy_Pin);
+	this->rfModule = new SX1280(&hspi1, rfNresetPin, rfNcsPin, rfBusyPin);
 
-	rf1Module->onTxDone = [this]() {
-		rf1TxEnable.low();
+	rfModule->onTxDone = [this]() {
+		rfTxEnable.low();
 		state = TRANSMITTED; 
 	};
 
-	rf1Module->onSyncWordDone = [this]() {
+	rfModule->onSyncWordDone = [this]() {
 	    state = SYNC_RECEIVED;
 	};
 
-	rf1Module->onRxDone = [this]() {
-		rf1RxEnable.low();
+	rfModule->onRxDone = [this]() {
+		rfRxEnable.low();
 		state = RECEIVED;
 	};
 
-	rf1Module->init();
-	rf1Module->setAddress(0x6969);
+	rfModule->init();
+	rfModule->setAddress(0x6969);
 
     __HAL_TIM_SET_AUTORELOAD(heartBeatTimer, transmitter ? trackingHopRate : acqusitionHopRate);
 }
@@ -37,7 +37,7 @@ void RfLink::sendPacket(char *message ) {
 	if (onTransmit == nullptr) { 
 		return; 
 	}
-	rf1TxEnable.high();
+	rfTxEnable.high();
     Packet packet;
     packet.status.packetNumber = packetNumber;
 
@@ -48,13 +48,17 @@ void RfLink::sendPacket(char *message ) {
     strncpy((char*)packet.payload, message, sizeof(packet.payload) - 1);
 
     onTransmit(packet);
-    rf1Module->send((uint8_t *)&packet, sizeof(Packet));
+    rfModule->send((uint8_t *)&packet, sizeof(Packet));
 	DEBUG("message sent successfully!\n");
 }
 
+bool RfLink::receivePacket(uint8_t* buffer, uint8_t* size, uint8_t maxSize) {
+    return rfModule->getPayload(buffer, size, maxSize);
+}
+
 void RfLink::enterRx(void) {
-	rf1RxEnable.high();
-    rf1Module->enterRx();
+	rfRxEnable.high();
+    rfModule->enterRx();
 }
 
 void RfLink::changeMode(void) {
@@ -68,7 +72,7 @@ void RfLink::processHeartBeat(TIM_HandleTypeDef *htim) {
 }
 
 void RfLink::processIrqs(Pin  pin) {
-//	static const Pin irqPin(RF1IRQ_GPIO_Port, RF1IRQ_Pin);
+//	static const Pin irqPin(rfIRQ_GPIO_Port, rfIRQ_Pin);
 //	if (pin == irqPin) {
 //		lastIrqSource = MODULE1_IRQ;
 //	}

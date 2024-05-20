@@ -65,7 +65,7 @@ public:
 	{ };
 
 	~RfLink() {
-		delete rf1Module;
+		delete rfModule;
 	};
 
 	void init();
@@ -78,10 +78,11 @@ public:
 	std::function<void(Packet &packet)> onReceive;
 	std::function<void(Packet &packet)> onReceiveTelemetry;
 
-	SX1280 *rf1Module;
+	SX1280 *rfModule;
 	bool sender { true };
 	void changeMode(void);
 	void sendPacket(char *message);
+	bool receivePacket(uint8_t* buffer, uint8_t* size, uint8_t maxSize);
 	void enterRx(void);
 
 private:
@@ -90,8 +91,8 @@ private:
 	bool transmitter;
 	bool tracking { false };
 
-	Pin rf1TxEnable { Pin(RF_tx_GPIO_Port, RF_tx_Pin) };
-	Pin rf1RxEnable { Pin(RF_rx_GPIO_Port, RF_rx_Pin) };
+	Pin rfTxEnable { Pin(RF_tx_GPIO_Port, RF_tx_Pin) };
+	Pin rfRxEnable { Pin(RF_rx_GPIO_Port, RF_rx_Pin) };
 
 	volatile LinkState state { INIT };
 	uint16_t packetNumber;
