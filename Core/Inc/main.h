@@ -77,10 +77,10 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define RF_tx_Pin GPIO_PIN_11
-#define RF_tx_GPIO_Port GPIOC
-#define RF_rx_Pin GPIO_PIN_12
+#define RF_rx_Pin GPIO_PIN_11
 #define RF_rx_GPIO_Port GPIOC
+#define RF_tx_Pin GPIO_PIN_12
+#define RF_tx_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

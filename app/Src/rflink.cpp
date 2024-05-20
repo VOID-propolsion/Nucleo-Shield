@@ -26,11 +26,6 @@ void RfLink::init() {
 		state = RECEIVED;
 	};
 
-	// reset the device manually
-	rf1NresetPin.low();
-	HAL_Delay(10);
-	rf1NresetPin.high();
-
 	rf1Module->init();
 	rf1Module->setAddress(0x6969);
 
