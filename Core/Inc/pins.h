@@ -1,10 +1,28 @@
 #ifndef _PinNames
 #define _PinNames
-
+#include "stdint.h"
 // these are to combine the GPIO pin into 1 address
 #define ENCODE_GPIO_PIN(port, pin) (((uint32_t)(port) << 16) | (pin))
 #define DECODE_GPIO_PORT(pin) ((GPIO_TypeDef *)(pin >> 16))
 #define DECODE_GPIO_PIN(pin) ((uint16_t)(pin & 0xFFFF))
+#define OUTPUT       GPIO_MODE_OUTPUT_PP
+#define INPUT        GPIO_MODE_INPUT
+#define HIGH         GPIO_PIN_SET
+#define LOW          GPIO_PIN_RESET
+
+void pinMode(uint32_t pin, uint32_t mode);
+
+void digitalWrite(uint32_t pin, uint32_t value);
+
+uint32_t digitalRead(uint32_t pin);
+
+void delay(unsigned long ms);
+
+void delayMicroseconds(unsigned long us);
+
+unsigned long millis();
+
+unsigned long micros();
 
 typedef enum {
     ALT0  = 0x100,

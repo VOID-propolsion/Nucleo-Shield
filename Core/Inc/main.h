@@ -32,7 +32,8 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
-#include "pins.h"
+#include <stdarg.h>
+// #include "pins.h"
 
 /* USER CODE END Includes */
 
@@ -53,8 +54,6 @@ SPI_HandleTypeDef getSpi();
 void DEBUG(const char *format, ...);
 
 /* USER CODE END EM */
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
