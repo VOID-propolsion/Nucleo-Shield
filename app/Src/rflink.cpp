@@ -11,6 +11,8 @@ void RfLink::init() {
 	Pin rfNcsPin(RF_NSS_GPIO_Port, RF_NSS_Pin);
 	Pin rfBusyPin(RF_Busy_GPIO_Port, RF_Busy_Pin);
 	this->rfModule = new SX1280(&hspi1, rfNresetPin, rfNcsPin, rfBusyPin);
+	rfRxEnable.high();
+	rfTxEnable.low();
 
 	rfModule->onTxDone = [this]() {
 		rfTxEnable.low();
@@ -48,12 +50,13 @@ void RfLink::sendPacket(char *message ) {
     strncpy((char*)packet.payload, message, sizeof(packet.payload) - 1);
 
     onTransmit(packet);
-    rfModule->send((uint8_t *)&packet, sizeof(Packet));
+    rfModule->send(&packet);
 	DEBUG("message sent successfully!\n");
 }
 
-bool RfLink::receivePacket(uint8_t* buffer, uint8_t* size, uint8_t maxSize) {
-    return rfModule->getPayload(buffer, size, maxSize);
+bool RfLink::receivePacket(Packet *buffer) {
+	bool response = rfModule->getPayload(buffer);
+    return response;
 }
 
 void RfLink::enterRx(void) {

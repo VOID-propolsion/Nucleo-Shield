@@ -14,8 +14,7 @@
 // );
 
 RfLink rfLink = RfLink(&htim3, true);
-uint8_t receiveBuffer[256]; // Buffer to store received data
-uint8_t receiveSize;
+Packet receivedPacket;
 
 int switches[4] = {SHIELD_SWITCH_1, SHIELD_SWITCH_2, SHIELD_SWITCH_3, SHIELD_SWITCH_4};
 
@@ -25,7 +24,12 @@ extern "C"
     {
         rfLink.init();
         rfLink.onTransmit = [](Packet &packet) {
-            DEBUG("message sent: %s\n", packet.payload);
+            // DEBUG("Sent data: ");
+            // for (int i = 0; i < sizeof(packet.payload); i++) {
+            //     DEBUG("%02X ", packet.payload[i]);
+            // }
+            // DEBUG("\n");
+            // DEBUG("message sent: %s\n", packet.payload);
         };
 
         rfLink.onReceive = [](Packet &packet) {
@@ -42,22 +46,21 @@ extern "C"
         if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
             rfLink.sendPacket("hello world!");
             while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-                if (rfLink.receivePacket(receiveBuffer, &receiveSize, sizeof(receiveBuffer))) {
+                rfLink.enterRx();
+                if (rfLink.receivePacket(&receivedPacket)) {
                     // Process received data
-                    DEBUG("Received data: ");
-                    for (uint8_t i = 0; i < receiveSize; ++i) {
-                        DEBUG("%02X ", receiveBuffer[i]);
-                    }
-                    DEBUG("\n");
+                    // DEBUG("Rough data: ");
+                    // for (int i = 0; i < sizeof(receivedPacket.payload); i++) {
+                    //     DEBUG("%02X ", receivedPacket.payload[i]);
+                    // }
+                    // DEBUG("\n");
+                    // DEBUG("packet number: %d\n\n", receivedPacket.status.packetNumber);
                 } else {
                     DEBUG("No data received or error occurred\n");
                 }
                 HAL_Delay(1000);
             }
-        } else {
-            rfLink.enterRx();
-
-        }
+        } 
         HAL_Delay(500);
     }
 

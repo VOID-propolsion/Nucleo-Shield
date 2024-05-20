@@ -24,30 +24,44 @@ using namespace std;
 void SX1280::init(void) {
     resetChip();
     wakeup();
-	setRegulatorMode(USE_DCDC);
+    setRegulatorMode(USE_DCDC);
 
+    // Set the modulation parameters for LoRa
     ModulationParams_t modulationParams;
-    modulationParams.PacketType = PACKET_TYPE_FLRC;
-    modulationParams.Params.Flrc.BitrateBandwidth = FLRC_BR_0_325_BW_0_3;
-    modulationParams.Params.Flrc.CodingRate = FLRC_CR_3_4;
-    modulationParams.Params.Flrc.ModulationShaping = RADIO_MOD_SHAPING_BT_OFF;
+    modulationParams.PacketType = PACKET_TYPE_LORA;
+    modulationParams.Params.LoRa.SpreadingFactor = LORA_SF7; 
+    modulationParams.Params.LoRa.Bandwidth = LORA_BW_1600;    
+    modulationParams.Params.LoRa.CodingRate = LORA_CR_4_5;
 
     PacketParams_t packetParams;
-    packetParams.PacketType = PACKET_TYPE_FLRC;
-    packetParams.Params.Flrc.PreambleLength = PREAMBLE_LENGTH_32_BITS;
-    packetParams.Params.Flrc.SyncWordLength = FLRC_SYNCWORD_LENGTH_4_BYTE;
-    packetParams.Params.Flrc.SyncWordMatch = RADIO_RX_MATCH_SYNCWORD_1;
-    packetParams.Params.Flrc.HeaderType = RADIO_PACKET_FIXED_LENGTH;
-    packetParams.Params.Flrc.PayloadLength = 41; //BUFFER_SIZE;
-    packetParams.Params.Flrc.CrcLength = RADIO_CRC_2_BYTES;
-    packetParams.Params.Flrc.Whitening = RADIO_WHITENING_OFF;
+    packetParams.PacketType = PACKET_TYPE_LORA;
+    packetParams.Params.LoRa.PreambleLength = 12;           
+    packetParams.Params.LoRa.HeaderType = LORA_PACKET_VARIABLE_LENGTH;
+    packetParams.Params.LoRa.PayloadLength = sizeof(Packet);
+    packetParams.Params.LoRa.Crc = LORA_CRC_ON ;
+    packetParams.Params.LoRa.InvertIQ = LORA_IQ_NORMAL;
+
+    // Apply the configuration
     setStandBy(STDBY_RC);
     setPacketType(modulationParams.PacketType);
     setModulationParams(&modulationParams);
     setPacketParams(&packetParams);
     setBufferBaseAddresses(0x00, 0x00);
-    setTxParams(0, RADIO_RAMP_02_US); //TX_OUTPUT_POWER
+    setTxParams(0, RADIO_RAMP_02_US);
     setLNAGainSetting(LNA_HIGH_SENSITIVITY_MODE);
+}
+
+void encodePacket(const Packet *packet, uint8_t *buffer) {
+    buffer[0] = (packet->status.packetType & 0x07) | ((packet->status.rfu & 0x07) << 3) | ((packet->status.packetNumber & 0x03) << 6);
+    buffer[1] = (packet->status.packetNumber >> 2) & 0xFF;
+    memcpy(buffer + 2, packet->payload, sizeof(packet->payload));
+}
+
+void decodePacket(Packet *packet, const uint8_t *buffer) {
+    packet->status.packetType = buffer[0] & 0x07;
+    packet->status.rfu = (buffer[0] >> 3) & 0x07;
+    packet->status.packetNumber = ((buffer[0] >> 6) & 0x03) | (buffer[1] << 2);
+    memcpy(packet->payload, buffer + 2, sizeof(packet->payload));
 }
 
 void SX1280::standBy(void) {
@@ -69,10 +83,22 @@ void SX1280::enterRx(void) {
 	setRx(timeout);
 }
 
-void SX1280::send(uint8_t *payload, uint8_t size) {
-	TickTime_t timeout { RADIO_TICK_SIZE_1000_US,  0 };
-	sendPayload(payload, size, timeout, 0);
+void SX1280::send(Packet *packet) {
+    uint8_t buffer[41]; // 2 bytes for status + 39 bytes for payload
+    encodePacket(packet, buffer);
+    // DEBUG("SENDING: ");
+    // for (int i = 0; i < sizeof(buffer); i++) {
+    //     DEBUG("%02X ", buffer[i]);
+    // }
+    // DEBUG("\n");
+    TickTime_t timeout { RADIO_TICK_SIZE_1000_US,  0 };
+    sendPayload(buffer, sizeof(buffer), timeout, 0);
 }
+
+// void SX1280::send(uint8_t *payload, uint8_t size) {
+// 	TickTime_t timeout { RADIO_TICK_SIZE_1000_US,  0 };
+// 	sendPayload(payload, size, timeout, 0);
+// }
 
 uint16_t SX1280::getFirmwareVersion(void) {
 	uint8_t buf[2];
@@ -437,17 +463,45 @@ void SX1280::setPayload(uint8_t *buffer, uint8_t size, uint8_t offset) {
     writeBuffer(offset, buffer, size);
 }
 
-bool SX1280::getPayload(uint8_t *buffer, uint8_t *size , uint8_t maxSize) {
+bool SX1280::getPayload(Packet *packet) {
+    uint8_t buffer[41]; // 2 bytes for status + 39 bytes for payload
+    uint8_t size;
     uint8_t offset;
 
-    this->getRxBufferStatus(size, &offset);
-    if (*size > maxSize) {
+    this->getRxBufferStatus(&size, &offset);
+    DEBUG("size: %d\n", size);
+    DEBUG("offset: %d\n", size);
+    if (size <= 0) {
+        return false;
+    }
+    if (size > sizeof(buffer)) {
+        DEBUG("size too big!\n");
         return false;
     }
 
-    readBuffer(offset, buffer, *size);
+    readBuffer(offset, buffer, size);
+    DEBUG("received: ");
+    for (int i = 0; i < sizeof(buffer); i++) {
+        DEBUG("%02X ", buffer[i]);
+    }
+    DEBUG("\n");
+    decodePacket(packet, buffer);
     return true;
 }
+
+
+// bool SX1280::getPayload(uint8_t *buffer, uint8_t *size , uint8_t maxSize) {
+//     uint8_t offset;
+
+//     this->getRxBufferStatus(size, &offset);
+//     if (*size > maxSize) {
+//         DEBUG("size too big!");
+//         return false;
+//     }
+
+//     readBuffer(offset, buffer, *size);
+//     return true;
+// }
 
 void SX1280::sendPayload(uint8_t *payload, uint8_t size, TickTime_t timeout, uint8_t offset) {
 	this->setPayload(payload, size, offset);

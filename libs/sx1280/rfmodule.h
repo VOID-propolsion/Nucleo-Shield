@@ -11,6 +11,16 @@
 #include <functional>
 #include <vector>
 
+typedef struct {
+	struct {
+		uint16_t packetType : 3;
+		uint16_t rfu : 3;
+		uint16_t packetNumber : 10;
+	} status;
+
+	uint8_t payload[39];
+} Packet;
+
 class RfModule {
 public:
 	RfModule() { };
@@ -21,7 +31,7 @@ public:
 	virtual void setAddress(uint16_t) = 0;
 	virtual void setChannel(uint8_t) = 0;
 	virtual void enterRx(void) = 0;
-	virtual void send(uint8_t *, uint8_t) = 0;
+	virtual void send(Packet *packet) = 0;
 
 	std::function<void(void)> onSyncWordDone;
 	std::function<void(void)> onRxDone;

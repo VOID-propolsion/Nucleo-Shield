@@ -9,35 +9,6 @@
 #include <stdint.h>
 #include <map>
 
-typedef struct {
-	struct {
-		uint16_t packetType : 3;
-		uint16_t rfu : 3;
-		uint16_t packetNumber : 10;
-	} status;
-
-	uint8_t payload[39];
-} Packet;
-
-typedef struct {
-	uint8_t ch1Lsb;
-	uint8_t ch2Lsb;
-	struct {
-		uint8_t ch1Msb : 4;
-		uint8_t ch2Msb : 4;
-	} ch12Msb;
-
-	uint8_t ch3Lsb;
-	uint8_t ch4Lsb;
-	struct {
-		uint8_t ch3Msb : 4;
-		uint8_t ch4Msb : 4;
-	} ch34Msb;
-
-	uint8_t *begin() { return &ch1Lsb; }
-	uint8_t *end() { return &ch4Lsb + 2; }
-} ServoData;
-
 typedef enum {
 				INIT,
 				START,
@@ -53,8 +24,7 @@ typedef enum {
 
 typedef enum {
 	NO_IRQ,
-	MODULE1_IRQ,
-	MODULE2_IRQ
+	YES_IRQ,
 } IrqSource;
 
 class RfLink {
@@ -82,7 +52,7 @@ public:
 	bool sender { true };
 	void changeMode(void);
 	void sendPacket(char *message);
-	bool receivePacket(uint8_t* buffer, uint8_t* size, uint8_t maxSize);
+	bool receivePacket(Packet *buffer);
 	void enterRx(void);
 
 private:

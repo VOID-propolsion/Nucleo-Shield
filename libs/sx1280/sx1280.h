@@ -45,7 +45,7 @@ public:
     void setAddress(uint16_t address);
     void setChannel(uint8_t channel);
 	void enterRx(void);
-	void send(uint8_t *payload, uint8_t size);
+    void send(Packet *packet);
 
     uint16_t getFirmwareVersion(void);
     void setRegulatorMode(RadioRegulatorModes_t mode);
@@ -71,7 +71,7 @@ public:
     void setRx(TickTime_t timeout);
     void setTx(TickTime_t timeout);
     void setPayload(uint8_t *payload, uint8_t size, uint8_t offset = 0x00);
-    bool getPayload(uint8_t *payload, uint8_t *size, uint8_t maxSize);
+    bool getPayload(Packet *packet);
     void sendPayload(uint8_t *payload, uint8_t size, TickTime_t timeout, uint8_t offset = 0x00);
     bool setSyncWord(uint8_t syncWordIdx, uint8_t *syncWord);
     void setSyncWordErrorTolerance(uint8_t errorBits);
