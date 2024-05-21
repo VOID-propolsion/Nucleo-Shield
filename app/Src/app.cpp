@@ -46,21 +46,14 @@ extern "C"
         if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
             rfLink.sendPacket("hello world!");
             while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-                rfLink.enterRx();
-                if (rfLink.receivePacket(&receivedPacket)) {
-                    // Process received data
-                    // DEBUG("Rough data: ");
-                    // for (int i = 0; i < sizeof(receivedPacket.payload); i++) {
-                    //     DEBUG("%02X ", receivedPacket.payload[i]);
-                    // }
-                    // DEBUG("\n");
-                    // DEBUG("packet number: %d\n\n", receivedPacket.status.packetNumber);
-                } else {
-                    DEBUG("No data received or error occurred\n");
-                }
-                HAL_Delay(1000);
             }
-        } 
+        } else {
+            rfLink.enterRx();
+            if (rfLink.receivePacket(&receivedPacket)) {
+                DEBUG("received: %s\n", (char *) receivedPacket.payload);
+            }
+            HAL_Delay(1000);
+        }
         HAL_Delay(500);
     }
 

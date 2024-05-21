@@ -35,7 +35,7 @@ void RfLink::init() {
 }
 
 void RfLink::sendPacket(char *message ) {
-	DEBUG("sending message...\n");
+	// DEBUG("sending message...\n");
 	if (onTransmit == nullptr) { 
 		return; 
 	}
@@ -51,7 +51,7 @@ void RfLink::sendPacket(char *message ) {
 
     onTransmit(packet);
     rfModule->send(&packet);
-	DEBUG("message sent successfully!\n");
+	// DEBUG("message sent successfully!\n");
 }
 
 bool RfLink::receivePacket(Packet *buffer) {

@@ -92,6 +92,7 @@ private:
     void readBuffer(uint8_t offset, uint8_t *buffer, uint8_t size);
     void writeBuffer(uint8_t offset, uint8_t *buffer, uint8_t size);
     void resetChip(void);
+    void clearBuffer(uint8_t baseAddress, uint8_t size);
 
 protected:
     SPI_HandleTypeDef *radioSpi;

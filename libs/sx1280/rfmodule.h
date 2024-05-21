@@ -11,6 +11,8 @@
 #include <functional>
 #include <vector>
 
+#define PAYLOAD_SIZE	39
+
 typedef struct {
 	struct {
 		uint16_t packetType : 3;
@@ -18,7 +20,7 @@ typedef struct {
 		uint16_t packetNumber : 10;
 	} status;
 
-	uint8_t payload[39];
+	uint8_t payload[PAYLOAD_SIZE];
 } Packet;
 
 class RfModule {

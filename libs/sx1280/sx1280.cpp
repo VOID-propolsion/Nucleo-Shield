@@ -29,8 +29,8 @@ void SX1280::init(void) {
     // Set the modulation parameters for LoRa
     ModulationParams_t modulationParams;
     modulationParams.PacketType = PACKET_TYPE_LORA;
-    modulationParams.Params.LoRa.SpreadingFactor = LORA_SF7; 
-    modulationParams.Params.LoRa.Bandwidth = LORA_BW_1600;    
+    modulationParams.Params.LoRa.SpreadingFactor = LORA_SF12; // page 35 of the data sheet
+    modulationParams.Params.LoRa.Bandwidth = LORA_BW_1600; // high sensitivity but high bit rate    
     modulationParams.Params.LoRa.CodingRate = LORA_CR_4_5;
 
     PacketParams_t packetParams;
@@ -43,11 +43,12 @@ void SX1280::init(void) {
 
     // Apply the configuration
     setStandBy(STDBY_RC);
-    setPacketType(modulationParams.PacketType);
-    setModulationParams(&modulationParams);
+    setPacketType(modulationParams.PacketType); // set packet type first
+    setModulationParams(&modulationParams); // then set modulation parameters
     setPacketParams(&packetParams);
     setBufferBaseAddresses(0x00, 0x00);
     setTxParams(0, RADIO_RAMP_02_US);
+    //setBufferBaseAddresses(0x00, 0x80);
     setLNAGainSetting(LNA_HIGH_SENSITIVITY_MODE);
 }
 
@@ -84,7 +85,7 @@ void SX1280::enterRx(void) {
 }
 
 void SX1280::send(Packet *packet) {
-    uint8_t buffer[41]; // 2 bytes for status + 39 bytes for payload
+    uint8_t buffer[2 + PAYLOAD_SIZE]; // 2 bytes for status + 39 bytes for payload
     encodePacket(packet, buffer);
     // DEBUG("SENDING: ");
     // for (int i = 0; i < sizeof(buffer); i++) {
@@ -463,29 +464,56 @@ void SX1280::setPayload(uint8_t *buffer, uint8_t size, uint8_t offset) {
     writeBuffer(offset, buffer, size);
 }
 
+void SX1280::clearBuffer(uint8_t baseAddress, uint8_t size) {
+    uint8_t clearData[size];
+    memset(clearData, 0, size);
+    writeBuffer(baseAddress, clearData, size);
+}
+
 bool SX1280::getPayload(Packet *packet) {
-    uint8_t buffer[41]; // 2 bytes for status + 39 bytes for payload
     uint8_t size;
     uint8_t offset;
 
+    // Retrieve the status of the RX buffer
     this->getRxBufferStatus(&size, &offset);
-    DEBUG("size: %d\n", size);
-    DEBUG("offset: %d\n", size);
+
+    // If the size is zero, return false
     if (size <= 0) {
         return false;
     }
-    if (size > sizeof(buffer)) {
-        DEBUG("size too big!\n");
+
+    uint8_t buffer[size];
+
+    // Read the data from the RX buffer
+    readBuffer(offset, buffer, size);
+
+    // Check if the buffer is completely empty
+    bool isEmpty = true;
+    for (int i = 0; i < size; i++) {
+        if (buffer[i] != 0) {
+            isEmpty = false;
+            break;
+        }
+    }
+
+    // If the buffer is empty, return false
+    if (isEmpty) {
         return false;
     }
 
-    readBuffer(offset, buffer, size);
-    DEBUG("received: ");
-    for (int i = 0; i < sizeof(buffer); i++) {
-        DEBUG("%02X ", buffer[i]);
-    }
-    DEBUG("\n");
+    // // Debugging: Print the received data
+    // DEBUG("received: ");
+    // for (int i = 0; i < size; i++) {
+    //     DEBUG("%02X ", buffer[i]);
+    // }
+    // DEBUG("\n");
+
+    // Decode the packet
     decodePacket(packet, buffer);
+
+    // Clear the buffer after reading
+    clearBuffer(offset, size);
+
     return true;
 }
 
