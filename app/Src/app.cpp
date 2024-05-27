@@ -1,20 +1,8 @@
 #include "app.hpp"
-// #include "stm32f4xx_radio.h"
-
-// STM32Hal* hal = new STM32Hal(
-//     PB_3, // SCK
-//     PB_4, // MISO
-//     PB_5 // MOSI
-// );
-// SX1280 radio = new Module(
-//     hal, 
-//     PA_4, // Chip select
-//     PB_12, // interupt 
-//     PA_10 // reset
-// );
 
 RfLink rfLink = RfLink(&htim3, true);
 Packet receivedPacket;
+LPS22HB baro = LPS22HB();
 
 int switches[4] = {SHIELD_SWITCH_1, SHIELD_SWITCH_2, SHIELD_SWITCH_3, SHIELD_SWITCH_4};
 
@@ -23,6 +11,7 @@ extern "C"
     void setup()
     {
         rfLink.init();
+        baro.begin(&hspi2);
         rfLink.onTransmit = [](Packet &packet) {
             // DEBUG("Sent data: ");
             // for (int i = 0; i < sizeof(packet.payload); i++) {
@@ -43,21 +32,23 @@ extern "C"
 
     void loop()
     {
-        if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-            rfLink.sendPacket("hello world!");
-            while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
-            }
-        } else {
-            rfLink.enterRx();
-            if (rfLink.receivePacket(&receivedPacket)) {
-                DEBUG("received: %s\n", (char *) receivedPacket.payload);
-            }
-            HAL_Delay(1000);
-        }
-        HAL_Delay(500);
+        DEBUG("reading: %f\n", baro.readPressure());
+        HAL_Delay(1000);
+        // if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
+        //     rfLink.sendPacket("hello world!");
+        //     while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
+        //     }
+        // } else {
+        //     rfLink.enterRx();
+        //     if (rfLink.receivePacket(&receivedPacket)) {
+        //         DEBUG("received: %s\n", (char *) receivedPacket.payload);
+        //     }
+        //     HAL_Delay(1000);
+        // }
+        // HAL_Delay(500);
     }
 
-    int handleInput(uint8_t* buffer) {
+    int handleUartInput(uint8_t* buffer) {
         DEBUG("\n");
         rfLink.sendPacket((char *) buffer);
         return 0;

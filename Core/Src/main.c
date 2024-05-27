@@ -206,7 +206,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
       rxBuffer[rx_index++] = rxdata[0];
     } else {
       // handle input buffer in here
-      handleInput(rxBuffer);
+      handleUartInput(rxBuffer);
       rx_index = 0;
       transfer_cplt = 1;
       HAL_UART_Transmit(&huart2, "\n\r", 2, 100);
