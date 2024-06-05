@@ -32,7 +32,8 @@ extern "C"
 
     void loop()
     {
-        DEBUG("reading: %f\n", baro.readPressure());
+        // DEBUG("temperature: %f\n", baro.readTemperature());
+        DEBUG("pressure: %f\n", baro.readPressure());
         HAL_Delay(1000);
         // if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
         //     rfLink.sendPacket("hello world!");

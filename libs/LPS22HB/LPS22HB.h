@@ -1,44 +1,8 @@
-/* 
-   LPS22HB.h: Header file for LPS22HB class
-
-   Copyright (C) 2018 Simon D. Levy
-
-   Adapted from https://github.com/kriswiner/LPS22HB_LIS2MDL_LPS22HB
-
-   This file is part of LPS22HB.
-
-   LPS22HB is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   LPS22HB is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   You should have received a copy of the GNU General Public License
-   along with LPS22HB.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #pragma once
 
 #include <stdint.h>
 #include "main.h"
 #include "spi.h"
-// One ifdef needed to support delay() cross-platform
-#if defined(ARDUINO)
-#include <Arduino.h>
-
-#elif defined(__arm__) 
-#if defined(STM32F303)  || defined(STM32F405xx)
-extern "C" { void delay(uint32_t msec); }
-}
-#else
-#endif
-
-#else
-void delay(uint32_t msec);
-#endif
 
 class LPS22HB
 {
