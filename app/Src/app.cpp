@@ -9,7 +9,10 @@ int switches[4] = {SHIELD_SWITCH_1, SHIELD_SWITCH_2, SHIELD_SWITCH_3, SHIELD_SWI
 extern "C"
 {
     void setup()
-    {
+    {   
+        Servo_Init();
+        Set_Servo_Angle(90);
+
         rfLink.init();
         baro.begin(&hspi2);
         rfLink.onTransmit = [](Packet &packet) {
@@ -31,9 +34,17 @@ extern "C"
     }
 
     void loop()
-    {
-        DEBUG("reading: %f\n", baro.readPressure());
-        HAL_Delay(1000);
+    {   
+        for (uint16_t i = 0; i <= 180; i += 18) {
+            Set_Servo_Angle(i);
+            
+            HAL_Delay(500); // Wait for 0.5 seconds
+        }
+        HAL_Delay(1500);
+
+        //DEBUG("reading: %f\n", baro.readPressure());
+        
+   
         // if (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {
         //     rfLink.sendPacket("hello world!");
         //     while (!HAL_GPIO_ReadPin(GPIOC, BOARD_BUTTON)) {

@@ -3,6 +3,7 @@
 #include "tim.h"
 #include "rflink.h"
 #include "LPS22HB.h"
+#include "servo.h"
 
 #define BOARD_BUTTON        GPIO_PIN_13 // b
 #define BOARD_LED           GPIO_PIN_5 // a

@@ -1,0 +1,13 @@
+PLINK v1.90b7.2 64-bit (11 Dec 2023)
+Options in effect:
+  --sercfg 115200
+  --serial COM4
+
+Hostname: DESKTOP-OPTTMTB
+Working directory: D:\programming\Astrea
+Start time: Wed Jun 05 11:29:07 2024
+
+Error: Unrecognized flag ('-sercfg').
+For more information, try "plink --help <flag name>" or "plink --help | more".
+
+End time: Wed Jun 05 11:29:07 2024
