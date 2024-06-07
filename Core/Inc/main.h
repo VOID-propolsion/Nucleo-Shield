@@ -31,11 +31,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <string.h>
+#include <stdarg.h>
+// #include "pins.h"
 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+// SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef getSpi();
 
 /* USER CODE END ET */
 
@@ -46,10 +51,9 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+void DEBUG(const char *format, ...);
 
 /* USER CODE END EM */
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
@@ -61,12 +65,22 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
+#define RF_NSS_Pin GPIO_PIN_4
+#define RF_NSS_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define RF_Busy_Pin GPIO_PIN_12
+#define RF_Busy_GPIO_Port GPIOB
+#define RF_Reset_Pin GPIO_PIN_10
+#define RF_Reset_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define RF_tx_Pin GPIO_PIN_11
+#define RF_tx_GPIO_Port GPIOC
+#define RF_rx_Pin GPIO_PIN_12
+#define RF_rx_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

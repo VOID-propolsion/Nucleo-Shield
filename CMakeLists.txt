@@ -6,7 +6,7 @@ set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 
 # ##############################################################################
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Edit your MCU information up to the next border
@@ -36,6 +36,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
 # Headers
+MACRO(GET_LIBRARY_HEADERS return_list)
+    FILE(GLOB_RECURSE new_list "${CMAKE_SOURCE_DIR}/libs/*.h" "${CMAKE_SOURCE_DIR}/libs/*.hpp")
+    SET(dir_list "")
+    FOREACH(file_path ${new_list})
+        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+        SET(dir_list ${dir_list} ${dir_path})
+    ENDFOREACH()
+    LIST(REMOVE_DUPLICATES dir_list)
+    SET(${return_list} ${dir_list})
+ENDMACRO()
+
 set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc
@@ -47,11 +58,18 @@ set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${PROJECT_DIR}/Inc
 )
+GET_LIBRARY_HEADERS(LIBRARY_INCLUDE_DIRECTORIES)
+
+list(LENGTH LIBRARY_INCLUDE_DIRECTORIES LIBRARY_INCLUDE_DIRECTORIES_COUNT)
+message(STATUS "[INFO] Found ${LIBRARY_INCLUDE_DIRECTORIES_COUNT} library directories.")
 
 # Sources
 file(GLOB_RECURSE STM32CUBEMX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/*.cpp
+)
 file(GLOB_RECURSE PROJECT_SOURCES FOLLOW_SYMLINKS
     ${PROJECT_DIR}/*.cpp
     ${PROJECT_DIR}/*.c)
@@ -71,11 +89,14 @@ target_compile_definitions(${EXECUTABLE} PRIVATE
 # Add header directories (AFTER add_executable !!)
 target_include_directories(${EXECUTABLE} PRIVATE
     ${CUBEMX_INCLUDE_DIRECTORIES}
-    ${PROJECT_INCLUDE_DIRECTORIES})
+    ${PROJECT_INCLUDE_DIRECTORIES}
+    ${LIBRARY_INCLUDE_DIRECTORIES}
+)
 
 # Compiler and linker options
 target_compile_options(${EXECUTABLE} PRIVATE
     ${CPU_PARAMETERS}
+    -w
     -Wall
     -Wextra
     -Wpedantic
