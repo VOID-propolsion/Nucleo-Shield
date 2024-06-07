@@ -61,7 +61,6 @@ void LPS22HB::writeRegister(uint8_t subAddress, uint8_t data)
 {
     uint8_t buffer[2] = {subAddress & 0x7F, data}; 
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
-
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
     HAL_Delay(10);
     HAL_SPI_Transmit(_hspi, buffer, 2, HAL_MAX_DELAY);
