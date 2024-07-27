@@ -5,8 +5,6 @@ name: CMake on a single platform
 on:
   pull_request:
     branches: [ "main" ]
-  push:
-    branches: [ "main" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -23,10 +21,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: carlosperate/arm-none-eabi-gcc-action@v1
+    - run: arm-none-eabi-gcc --version
+
     - name: Configure CMake
-      env:
-        CC: /usr/bin/gcc-10
-        CXX: /usr/bin/g++-10
+      # env:
+      #   CC: /usr/bin/gcc-10
+      #   CXX: /usr/bin/g++-10
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
