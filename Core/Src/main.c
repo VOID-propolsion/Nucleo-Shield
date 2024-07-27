@@ -24,12 +24,12 @@
 #include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
-#include "app.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdarg.h>
+#include <app.hpp>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

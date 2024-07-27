@@ -1,5 +1,4 @@
 #pragma once
-#include "main.h"
 
 #define BOARD_BUTTON GPIO_PIN_13 // b
 #define BOARD_LED GPIO_PIN_5     // a
