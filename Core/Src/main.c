@@ -22,7 +22,7 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
-#include "usb_otg.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -101,20 +101,17 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
-  MX_USB_OTG_FS_PCD_Init();
   MX_USART2_UART_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  DEBUG("setting up...\n");
   setup();
-  DEBUG("set up finished!\n");
-  
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_UART_Receive_IT(&huart2, rxdata, 1);
     loop();
     /* USER CODE END WHILE */
 
@@ -171,50 +168,6 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-SPI_HandleTypeDef getSpi() {
-  return hspi1;
-}
-
-void DEBUG(const char *format, ...) {
-    char buffer[DEBUG_BUFFER_SIZE];  // Create a buffer to hold the formatted message
-    va_list args;                    // Initialize a variable argument list
-    
-    va_start(args, format);          // Start variadic argument processing
-    vsnprintf(buffer, DEBUG_BUFFER_SIZE, format, args); // Format the string into the buffer
-    va_end(args);                    // Clean up variadic argument list
-    
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY); // Send the formatted string over UART
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(huart); // I have no clue what this does, but it was already here
-  /* NOTE: This function should not be modified, when the callback is needed,
-           the HAL_UART_RxCpltCallback could be implemented in the user file
-   */
-  uint8_t i;
-  if (huart ->Instance == USART2) {
-    if (rx_index == 0) {
-      // clear the buffer
-      for (i = 0; i < 100; i++) {
-        rxBuffer[i] = 0;
-      }
-    }
-    if (rxdata[0] != 13) {
-      // write to data buffer
-      rxBuffer[rx_index++] = rxdata[0];
-    } else {
-      // handle input buffer in here
-      handleUartInput(rxBuffer);
-      rx_index = 0;
-      transfer_cplt = 1;
-      HAL_UART_Transmit(&huart2, "\n\r", 2, 100);
-    }
-  }
-  HAL_UART_Receive_IT(&huart2, rxdata, 1);
-  HAL_UART_Transmit_IT(&huart2, rxdata, strlen(rxdata));
-}
 /* USER CODE END 4 */
 
 /**

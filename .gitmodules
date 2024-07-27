@@ -1,0 +1,3 @@
+[submodule "Middlewares/Third_Party/littlefs"]
+	path = Middlewares/Third_Party/littlefs
+	url = https://github.com/littlefs-project/littlefs.git
