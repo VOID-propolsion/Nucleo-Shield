@@ -105,7 +105,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  setup();
+
+    setup();
 
   /* USER CODE END 2 */
 

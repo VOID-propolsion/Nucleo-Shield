@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-include(./gcc-arm-none-eabi.cmake)
+include(./gcc-arm-none-eabi.cmake)  
 
 # Set the build directory
 set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
@@ -53,14 +53,19 @@ set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc/Legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/App
     ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/Target
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/littlefs
     ${CMAKE_CURRENT_SOURCE_DIR}/App
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Recorder/LFS
+    
+    # Middlewares
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/littlefs
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
 
+    # Test
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/LPS22HB
@@ -68,6 +73,8 @@ set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/SX1280
 )
 GET_LIBRARY_HEADERS(LIBRARY_INCLUDE_DIRECTORIES)
+
+
 
 list(LENGTH LIBRARY_INCLUDE_DIRECTORIES LIBRARY_INCLUDE_DIRECTORIES_COUNT)
 message(STATUS "[INFO] Found ${LIBRARY_INCLUDE_DIRECTORIES_COUNT} library directories.")
@@ -81,6 +88,9 @@ file(GLOB_RECURSE STM32CUBEMX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test/*.cpp
+
 )
 file(GLOB_RECURSE PROJECT_SOURCES FOLLOW_SYMLINKS
     ${PROJECT_DIR}/*.cpp
@@ -145,3 +155,18 @@ add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
     ${EXECUTABLE}.hex
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${EXECUTABLE}>
     ${EXECUTABLE}.bin)
+
+
+# Check the host OS. if it is Windows, use Git Bash to run the test script.
+if(CMAKE_HOST_WIN32) # Windows
+    set(CTEST_COMMAND "C:/Program Files/Git/bin/bash.exe" -c)
+else() # Linux
+    # when on linux, just use simple bash or sh
+    set(CTEST_COMMAND bash -c)
+endif()
+
+include(CTest)
+add_test( 
+    NAME littleFs_test 
+    COMMAND ${CTEST_COMMAND} "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test/tester.sh someexe.bin"
+)
