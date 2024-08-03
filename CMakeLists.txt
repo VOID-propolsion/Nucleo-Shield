@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/gcc-arm-none-eabi.cmake)
+
 # Edit your MCU information up to the next border
 project(Nucleo-Shield)
 # Where the main project is
@@ -55,9 +57,12 @@ set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/App
     ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/Target
+    
+    # App
     ${CMAKE_CURRENT_SOURCE_DIR}/App
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Recorder/LFS
-    
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Serial
+
     # Middlewares
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/littlefs
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity/src
@@ -66,6 +71,9 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 
     # Test
     ${CMAKE_CURRENT_SOURCE_DIR}/Test
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test/LPS22HB
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test/LittleFs
+
 )
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/LPS22HB
@@ -73,7 +81,6 @@ set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/SX1280
 )
 GET_LIBRARY_HEADERS(LIBRARY_INCLUDE_DIRECTORIES)
-
 
 
 list(LENGTH LIBRARY_INCLUDE_DIRECTORIES LIBRARY_INCLUDE_DIRECTORIES_COUNT)
@@ -86,9 +93,7 @@ file(GLOB_RECURSE STM32CUBEMX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/App/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Test/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Test/*.cpp
 
 )
@@ -157,16 +162,35 @@ add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
     ${EXECUTABLE}.bin)
 
 
+if (ENABLE_UNIT_TESTING)
+    message(STATUS "ENABLE_UNIT_TESTING is ON")
+    add_compile_definitions(ENABLE_UNIT_TESTS=1) # used to enable tests in code
+  else()
+    message(STATUS "ENABLE_UNIT_TESTING is OFF")
+    add_compile_definitions(ENABLE_UNIT_TESTS=0) # used to disable tests in code
+  endif()
+
+
 # Check the host OS. if it is Windows, use Git Bash to run the test script.
-if(CMAKE_HOST_WIN32) # Windows
-    set(CTEST_COMMAND "C:/Program Files/Git/bin/bash.exe" -c)
-else() # Linux
+# if(CMAKE_HOST_WIN32) # Windows
+    set(CTEST_COMMAND python)
+# else() # Linux
     # when on linux, just use simple bash or sh
-    set(CTEST_COMMAND bash -c)
-endif()
+    # set(CTEST_COMMAND python)
+# endif()
 
 include(CTest)
 add_test( 
-    NAME littleFs_test 
-    COMMAND ${CTEST_COMMAND} "${CMAKE_CURRENT_SOURCE_DIR}/scripts/test/tester.sh someexe.bin"
+    NAME LPS22HB_TEST 
+    COMMAND ${CTEST_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test/tester.py 1 \"COM3\"
+)
+
+add_test( 
+    NAME LPS22HB_TEST2
+    COMMAND ${CTEST_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test/tester.py 1 \"COM3\"
+)
+
+add_test( 
+    NAME LITTLEFS_TEST 
+    COMMAND ${CTEST_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test/tester.py 2 \"COM3\"
 )

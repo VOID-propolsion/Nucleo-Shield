@@ -29,7 +29,13 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdarg.h>
+
+#if ENABLE_UNIT_TESTS
+#include <tests.hpp>
+#else
 #include <app.hpp>
+#endif
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,15 +112,24 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
-    setup();
-
+#if ENABLE_UNIT_TESTS
+  testsSetup();
+#else
+  setup();
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+#if ENABLE_UNIT_TESTS
+    testsLoop();
+#else
     loop();
+#endif
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
