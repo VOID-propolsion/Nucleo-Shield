@@ -4,7 +4,7 @@
 #include <unity.h>
 #include <serial.hpp>
 
-#include <lps22hb_test.hpp>
+#include <LPS22HB_test.hpp>
 #include <littleFS_test.hpp>
 
 void runTest(uint8_t testNum);

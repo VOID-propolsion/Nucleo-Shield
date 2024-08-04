@@ -65,14 +65,14 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 
     # Middlewares
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/littlefs
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
 
     # Test
     ${CMAKE_CURRENT_SOURCE_DIR}/Test
     ${CMAKE_CURRENT_SOURCE_DIR}/Test/LPS22HB
-    ${CMAKE_CURRENT_SOURCE_DIR}/Test/LittleFs
+    ${CMAKE_CURRENT_SOURCE_DIR}/Test/LittleFS
 
 )
 set(PROJECT_INCLUDE_DIRECTORIES
