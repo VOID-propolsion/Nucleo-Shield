@@ -7,3 +7,8 @@ The release/debug version of the code is compiled separetly from the test versio
 1. Write some test with the hierchahy in mind
 2. tests.cpp contains the switchcase that will determine which test will run. Add your test there
 3. Add your test to the cmake list
+
+
+## ignore this 
+ctest --test-dir build/test --timeout 120 
+https://mcuoneclipse.com/2023/12/18/modern-on-target-embedded-system-testing-with-cmake-and-ctest/

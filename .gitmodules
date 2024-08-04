@@ -1,6 +1,0 @@
-[submodule "Middlewares/Third_Party/littlefs"]
-	path = Middlewares/Third_Party/littlefs
-	url = https://github.com/littlefs-project/littlefs.git
-[submodule "Middlewares/Third_Party/Unity"]
-	path = Middlewares/Third_Party/Unity
-	url = git@github.com:ThrowTheSwitch/Unity.git
