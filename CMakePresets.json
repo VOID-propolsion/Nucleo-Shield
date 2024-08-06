@@ -1,0 +1,44 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "displayName": "base",
+            "description": "base with ninja",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "toolchainFile": "${sourceDir}/arm-gcc-toolchain.cmake",
+            "architecture": {
+                "value": "arm",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_UNIT_TESTING": "ON"
+            },
+            "warnings": {
+                "uninitialized": true,
+                "unusedCli": true
+            }
+        },
+        {
+            "inherits": "base",
+            "name": "Debug",
+            "displayName": "Debug mode",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_UNIT_TESTING": "OFF"
+            }
+        },
+        {
+            "inherits": "base",
+            "name": "Test",
+            "displayName": "Test mode",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_TESTING": "ON"
+            }
+        }
+    ]
+}
