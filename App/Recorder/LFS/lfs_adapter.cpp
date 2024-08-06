@@ -80,10 +80,10 @@ const struct lfs_config cfg = {
 };
 
 // entry point
-int initLittleFs(void)
+int8_t initLittleFs(void)
 {
     // mount the filesystem
-    int err = lfs_mount(&lfs, &cfg);
+    int8_t err = lfs_mount(&lfs, &cfg);
 
     // read current count
     uint32_t boot_count = 0;
@@ -99,5 +99,7 @@ int initLittleFs(void)
     lfs_file_close(&lfs, &file);
 
     // release any resources we were using
-    lfs_unmount(&lfs);
+    err = lfs_unmount(&lfs);
+
+    return err;
 }
