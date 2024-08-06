@@ -55,8 +55,6 @@ set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc/Legacy
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/App
-    ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/Target
     
     # App
     ${CMAKE_CURRENT_SOURCE_DIR}/App
@@ -65,9 +63,7 @@ set(CUBEMX_INCLUDE_DIRECTORIES
 
     # Middlewares
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/littlefs
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/Unity
 
     # Test
     ${CMAKE_CURRENT_SOURCE_DIR}/Test
@@ -91,7 +87,6 @@ file(GLOB_RECURSE STM32CUBEMX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/USB_DEVICE/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Test/*.cpp
